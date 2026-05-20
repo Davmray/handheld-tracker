@@ -43,6 +43,30 @@ function App() {
       .catch(err => console.log(err));
   };
 
+              const checkout = (id) => {
+                axios.patch(`http://localhost:5000/devices/${id}/checkout`, {
+                  assignedTo: "Managers Office"
+                })
+                
+                .then(() => {
+                  fetchDevices();
+                })
+
+                .catch(err => console.log(err));
+              };
+
+              const checkin = (id) => {
+                axios.patch(`http://localhost:5000/devices/${id}/checkin`, {
+                  by: "David Ray"
+                })
+
+                .then(() => {
+                  fetchDevices();
+                })
+
+                .catch(err => console.log(err));
+              };
+
   return (
     <div className="App">
       <h1>JD Sports Handheld Tracker</h1>
@@ -77,11 +101,11 @@ function App() {
               backgroundColor: "#f8f8f8"
             }}
           >
-            <h3>Avaliable</h3>
+            <h3>Checked-in</h3>
             <h2>
               {
                 devices.filter(
-                  d => d.status === "Avaliable"
+                  d => d.status === "Checked-in"
                 ).length
               }
             </h2>
@@ -96,7 +120,7 @@ function App() {
               backgroundColor: "#f8f8f8"
             }}
           >
-            <h3>Checked Out</h3>
+            <h3>Checked-out</h3>
             <h2>
               {
                 devices.filter(
@@ -131,7 +155,7 @@ function App() {
           onChange={handleChange}
         />
 
-        <button type="submit">Check-in Handheld</button>
+        <button type="submit">Add Device</button>
       </form>
 
         <input
@@ -172,6 +196,10 @@ function App() {
             <th style={{backgroundColor: "#f2f2f2", padding:"10px"}}>
               Status
             </th>
+
+            <th style={{backgroundColor: "#f2f2f2", padding:"10px"}}>
+              Actions
+            </th>
           </tr>
         </thead>
 
@@ -179,7 +207,6 @@ function App() {
           {devices
             .filter((device) => {
               const searchLower = search.toLocaleLowerCase();
-
               return (
                 (device.deviceId || device.deviceId || "")
                   .toLocaleLowerCase()
@@ -202,7 +229,7 @@ function App() {
                 <td>{device.assignedTo}</td>
                 <td style={{
                   color:
-                    device.status === "Avaliable"
+                    device.status === "Checked-in"
                       ? "green"
                       : device.status === "Checked-out"
                       ? "red"
@@ -210,6 +237,36 @@ function App() {
                   fontWeight: "bold"
                 }}>
                   {device.status}
+                </td>
+                <td style={{ padding: "10px" }}>
+                  <button
+                    onClick={() => checkout(device._id)}
+                    style={{
+                      marginRight: "10px",
+                      backgroundColor: "#ff4d4d",
+                      color: "white",
+                      border: "none",
+                      padding: "8px",
+                      cursor: "pointer",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Check Out
+                  </button>
+
+                  <button
+                    onClick={() => checkin(device._id)}
+                    style={{
+                      backgroundColor: "#4CAF50",
+                      color: "white",
+                      border: "none",
+                      padding: "8px",
+                      cursor: "pointer",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Check In
+                  </button>
                 </td>
               </tr>
             ))} 
